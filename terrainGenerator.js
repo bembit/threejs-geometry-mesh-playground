@@ -2,6 +2,7 @@ import * as THREE from 'https://unpkg.com/three@0.125.1/build/three.module.js';
 
 import { OrbitControls } from 'https://unpkg.com/three@0.125.1/examples/jsm/controls/OrbitControls.js';
 
+
 // Quick scene.
 const scene = new THREE.Scene();
 
@@ -24,9 +25,20 @@ class TerrainGenerator {
 
     createTerrain() {
         const geometry = new THREE.PlaneGeometry(this.size, this.size, this.segments, this.segments);
-        const material = new THREE.MeshStandardMaterial({ color: 0x228B22, wireframe: true });
+        // const material = new THREE.MeshStandardMaterial({ color: 0x228B22, wireframe: true });
 
-        // "Bump mapping" 
+        // Loader
+        const textureLoader = new THREE.TextureLoader();
+        const texture = textureLoader.load('./texture.jpg');
+        const material = new THREE.MeshStandardMaterial({ map: texture });
+
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(10, 10);
+        texture.anisotropy = 16;
+        texture.rotation = Math.PI / 2;
+
+        // Create the bump.
         const position = geometry.attributes.position;
 
         for (let i = 0; i < position.count; i++) {
