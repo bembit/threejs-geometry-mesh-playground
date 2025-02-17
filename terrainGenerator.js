@@ -111,16 +111,30 @@ const positionTakenByCube =  new Set();
 const rndNrY = () => Math.floor(Math.random() * (12));
 const rndNrXZ = () => Math.floor(Math.random() * 24) - 12;
 
+// let tmparray = [];
+// let tmparray2 = [];
+// for (let i = 0; i < 100; i++) {
+//     // console.log(rndNrY());
+//     tmparray.push(rndNrY());
+//     tmparray2.push(rndNrXZ());
+// }
+// console.log("max:", Math.max(...tmparray));
+// console.log("min:", Math.min(...tmparray));
+
+// console.log("max:", Math.max(...tmparray2));
+// console.log("min:", Math.min(...tmparray2));
+
 function getUniquePosition(size) {
     let posX, posY, posZ, key;
-
+    // This is great.
     do {
         posX = Math.round(rndNrXZ() / size) * size;
         posY = Math.round(rndNrY() / size) * size;
         posZ = Math.round(rndNrXZ() / size) * size;
 
         key = posX + ',' + posY + ',' + posZ;
-
+    // It keeps repeating if the key is already taken.
+    // So if we render 1500 cubes into a small scene we will brick the browser.
     } while (positionTakenByCube.has(key));
 
     positionTakenByCube.add(key);
