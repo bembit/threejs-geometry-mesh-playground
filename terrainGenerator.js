@@ -111,6 +111,7 @@ const positionTakenByCube =  new Set();
 const rndNrY = () => Math.floor(Math.random() * (12));
 const rndNrXZ = () => Math.floor(Math.random() * 24) - 12;
 
+// Helper for when you don't trust the random generator.
 // let tmparray = [];
 // let tmparray2 = [];
 // for (let i = 0; i < 100; i++) {
@@ -124,8 +125,9 @@ const rndNrXZ = () => Math.floor(Math.random() * 24) - 12;
 // console.log("max:", Math.max(...tmparray2));
 // console.log("min:", Math.min(...tmparray2));
 
-function getUniquePosition(size) {
+function getUniquePosition(size, maxCubes = 15) {
     let posX, posY, posZ, key;
+    let attempts = 0;
     // This is great.
     do {
         posX = Math.round(rndNrXZ() / size) * size;
@@ -133,15 +135,24 @@ function getUniquePosition(size) {
         posZ = Math.round(rndNrXZ() / size) * size;
 
         key = posX + ',' + posY + ',' + posZ;
+
+        // Good effort, but this check the attemps taken to find a unique position.
+        attempts++;
+        console.log(attempts);
+        if (attempts > maxCubes) {
+            break;
+        }
+
+    } while (positionTakenByCube.has(key));
     // It keeps repeating if the key is already taken.
     // So if we render 1500 cubes into a small scene we will brick the browser.
-    } while (positionTakenByCube.has(key));
-
+    // So we could calculate the maximum possuble number of cubes and break the loop if we exceed that.
     positionTakenByCube.add(key);
+    console.log(attempts);
     return { posX, posY, posZ };
 }
 
-for (let i = 0; i < 15; i++) {
+for (let i = 0; i < 1500; i++) {
     const { posX, posY, posZ } = getUniquePosition(4);
     const cube = new cubeGenerator(scene, 4, posX, posY, posZ);
 }
