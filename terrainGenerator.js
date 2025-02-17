@@ -74,6 +74,64 @@ class TerrainGenerator {
 
 }
 
+class cubeGenerator {
+    constructor(scene, size, posX, posY, posZ) {
+        this.scene = scene;
+        this.size = size;
+        this.posX = posX;
+        this.posY = posY;
+        this.posZ = posZ;
+        this.createCubes();
+    }
+
+    createCubes() {
+        const geometry = new THREE.BoxGeometry(this.size, this.size, this.size);
+        const textureLoader = new THREE.TextureLoader();
+        // const texture = textureLoader.load('./texture.jpg');
+        // const material = new THREE.MeshStandardMaterial({ map: texture });
+
+        const material = new THREE.MeshStandardMaterial({ color: 0x228B22, wireframe: true });
+
+        const cube = new THREE.Mesh(geometry, material);
+
+        // texture.wrapS = THREE.RepeatWrapping;
+        // texture.wrapT = THREE.RepeatWrapping;
+        // texture.repeat.set(4, 4);
+        // texture.anisotropy = 16;
+        // texture.rotation = Math.PI / 2;
+
+        cube.position.set(this.posX, this.posY, this.posZ);
+
+        this.scene.add(cube);
+    }
+}
+
+const positionTakenByCube =  new Set();
+
+const rndNrY = () => Math.floor(Math.random() * (12));
+const rndNrXZ = () => Math.floor(Math.random() * 24) - 12;
+
+function getUniquePosition(size) {
+    let posX, posY, posZ, key;
+
+    do {
+        posX = Math.round(rndNrXZ() / size) * size;
+        posY = Math.round(rndNrY() / size) * size;
+        posZ = Math.round(rndNrXZ() / size) * size;
+
+        key = posX + ',' + posY + ',' + posZ;
+
+    } while (positionTakenByCube.has(key));
+
+    positionTakenByCube.add(key);
+    return { posX, posY, posZ };
+}
+
+for (let i = 0; i < 15; i++) {
+    const { posX, posY, posZ } = getUniquePosition(4);
+    const cube = new cubeGenerator(scene, 4, posX, posY, posZ);
+}
+
 const terrain = new TerrainGenerator(scene);
 
 // Rest of the scene I forgot.
@@ -82,8 +140,8 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.z = 15;
-camera.position.y = 5;
+camera.position.z = 25;
+camera.position.y = 15;
 // camera.position.x = 15;
 
 const controls = new OrbitControls(camera, renderer.domElement);
