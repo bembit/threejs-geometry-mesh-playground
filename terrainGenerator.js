@@ -1,4 +1,4 @@
-import * as THREE from 'https://unpkg.com/three@0.125.1/build/three.module.js';
+import * as THREE from 'https://unpkg.com/three@0.139.2/build/three.module.js';
 
 import { OrbitControls } from 'https://unpkg.com/three@0.125.1/examples/jsm/controls/OrbitControls.js';
 
@@ -67,7 +67,7 @@ scene.add(ambientLight);
 
 class TerrainGenerator {
     // segment = 300 or less than 50 testing
-    constructor(scene, size = 20000, segments = 25) {
+    constructor(scene, size = 21500, segments = 75) {
         this.scene = scene;
         // this.scene.background = new THREE.Color(0x07dae2);
         this.scene.background = new THREE.Color(0x6ea9ab);
@@ -75,6 +75,8 @@ class TerrainGenerator {
         this.segments = segments;
         this.createTerrain();
         this.createVegetation();
+        this.createRainDrops();
+        this.createClouds();
     }
 
     createTerrain() {
@@ -161,12 +163,6 @@ class TerrainGenerator {
                 const treeTrunk = new THREE.Mesh(treeTrunkGeometry, treeTrunkMaterial);
                 const treeLeaves = new THREE.Mesh(treeLeaveGeometry, treeLeavesMaterial);
 
-                // treeTrunk.receiveShadow = true;
-                // treeTrunk.castShadow = true;
-                
-                // treeLeaves.receiveShadow = true;
-                // treeLeaves.castShadow = true;
-
                 // Randomize trunk scale.
                 treeTrunk.scale.set(20, (Math.random() + 1.0) * 100.0, 20);
                 // Adjust the trunk position so its base sits on the terrain.
@@ -197,6 +193,63 @@ class TerrainGenerator {
         }
     }
 
+    // Congratualtions on making missiles.
+    createRainDrops() {
+        const geometry = new THREE.CapsuleGeometry( 0.5, 0.5, 2, 4 ); 
+        const material = new THREE.MeshBasicMaterial( {color: 0xffffff, transparent: true, opacity: 0.3 } ); 
+        for (let x = 0; x < 50; x++) {
+        // rtx bricker 150 x 150 is fun
+        // for (let x = 0; x < 150; x++) {
+            for (let y = 0; y <  50; y++) {
+            // for (let y = 0; y <  150; y++) {
+                const x = 10000.0 * (Math.random() * 2.0 - 1.0);
+                const z = 10000.0 * (Math.random() * 2.0 - 1.0);
+
+                const raindrop = new THREE.Mesh( geometry, material );
+
+                raindrop.scale.set(20, (Math.random() + 1.0) * 100.0, 20);
+                raindrop.position.set(
+                    x,
+                    // terrainHeight + treeTrunk.scale.y / 2.0,
+                    4000 * (Math.random() * 2.0),
+                    z
+                );
+
+                raindrop.receiveShadow = true;
+                raindrop.castShadow = true;
+
+                scene.add(raindrop);
+            }
+        }
+    }
+
+    createClouds() {
+        const geometry = new THREE.CapsuleGeometry( 15, 4, 4, 8 ); 
+        const material = new THREE.MeshBasicMaterial( {color: 0x74ccf5, transparent: true, opacity: 0.5 } ); 
+        for (let x = 0; x < 6; x++) {
+            for (let y = 0; y <  6; y++) {
+                const x = 10000.0 * (Math.random() * 2.0 - 1.0);
+                const z = 10000.0 * (Math.random() * 2.0 - 1.0);
+
+                const cloud = new THREE.Mesh( geometry, material );
+
+                // Randomize scale.
+                cloud.scale.set(20, (Math.random() + 1.0) * 100.0, 20);
+                cloud.position.set(
+                    x,
+                    // terrainHeight + treeTrunk.scale.y / 2.0,
+                    (2000 * (Math.random() * 2.0) + 11000),
+                    z
+                );
+                cloud.rotation.set(1.5, 0, 0);
+
+                cloud.receiveShadow = true;
+                cloud.castShadow = true;
+
+                scene.add(cloud);
+            }
+        }
+    }
 }
 
 function animate() {
