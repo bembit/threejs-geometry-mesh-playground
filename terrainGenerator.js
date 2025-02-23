@@ -22,20 +22,20 @@ const controls = new OrbitControls(camera, renderer.domElement);
 controls.target.set(0, 20, 0);
 controls.update();
 
-const light = new THREE.DirectionalLight(0xffffff, 2);
+const light = new THREE.DirectionalLight(0xffffff, 1);
 light.position.set(12000, 5000, 2000);
 light.castShadow = true;
 light.shadow.bias = -0.001;
 light.shadow.mapSize.width = 2048;
 light.shadow.mapSize.height = 2048;
 light.shadow.camera.near = 0.5;
-light.shadow.camera.far = 50000;
-light.shadow.camera.left = -50000;
-light.shadow.camera.right = 50000;
-light.shadow.camera.top = 50000;
-light.shadow.camera.bottom = -50000;
-light.shadowMapWidth = 2048
-light.shadowMapHeight = 2048
+light.shadow.camera.far = 25000;
+light.shadow.camera.left = -15000;
+light.shadow.camera.right = 15000;
+light.shadow.camera.top = 15000;
+light.shadow.camera.bottom = -15000;
+light.shadowMapWidth = 15000
+light.shadowMapHeight = 15000
 
 const helper = new THREE.CameraHelper(light.shadow.camera);
 scene.add(helper);
@@ -119,8 +119,8 @@ class TerrainGenerator {
         // this.mesh.rotation.y = -Math.PI / 2;
         // this.mesh.rotation.z = -Math.PI / 2;
 
-        // renderedGround.receiveShadow = true;
-        // renderedGround.castShadow = true;
+        renderedGround.receiveShadow = true;
+        renderedGround.castShadow = true;
 
         this.scene.add(renderedGround);
         console.log(this.heightData);
